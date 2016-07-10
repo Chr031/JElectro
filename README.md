@@ -1,5 +1,9 @@
 # JElectro
 
+
+JElectro is a messaging library that provides remote method invocation (RMI) over java objects. 
+It uses socket to connect different JVM, uses java proxies to expose and execute remote objects and serialisation for the 
+
 This java library provides a remote method Invocation (RMI) technic on a global set of separated virtual machines.
 Its purpose is to extends the princip of method invocation to allow any single connected virtual machine to call any method exposed on the network.
 Basicaly this library allows bi-directional binding and remote callbacks and listeners. The notion of client and server is replace with the notion of node; Every node can expose instances that any other node can execute.
@@ -39,5 +43,9 @@ j2 is now connected to j1 and can retrieve and use the instance c exposed by j1 
 Calc c = j2.lookupUnique("calc",Calc.class);
 int sum = c.sum(12,9);
 ```
+
+
+## Bidirection and propagation
+
 
 
