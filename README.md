@@ -1,27 +1,28 @@
 # JElectro
 
 
+
 JElectro is a messaging library that provides remote method invocation over java objects. 
 It uses socket to connect different JVM, uses serialisation and proxies to expose and execute remote objects.
 
-It provides a remote procedure call technic on a global set of separated virtual machines and tries to extend the princips of method invocation to allow any single connected virtual machine to call any method exposed on the network.
-Basicaly this library allows bi-directional binding, remote callbacks and listeners to be executed. The notion of client and server is replace with the notion of node; Every nodes can expose instances that any other node can execute.
+It provides a remote procedure call technique on a global set of separated virtual machines and tries to extend the principles of method invocation to allow any single connected virtual machine to call any method exposed on the network.
+Basically this library allows bi-directional binding, remote callbacks and listeners to be executed. The notion of client and server is replace with the notion of node; Every nodes can expose instances that any other node can execute.
 
 ## First Overview
 
-By starting to work with this library you will first instanciate nodes.
-The base instance is called JElectro and you instanciate it by giving it a name:
+By starting to work with this library you will first instantiate nodes.
+The base instance is called JElectro and you instantiate it by giving it a name:
 ```java
 JElectro j1 = new JElectro("Node-1");
 ```
 Then this new node instance should be able to accept other nodes connections:
 
 ```java
-// j1 will open the port 12001 and listen to any incomming connection
+// j1 will open the port 12001 and will listen to any incoming connection
 j1.listenTo(12001);
 ```
 
-One can now define an interface and implementing it: 
+One can now define an interface and implement it: 
 ```java
 interface Calc { int sum(int a, int b);}
 Calc c = new Calc() {public int sum(int a, int b) {return a+b;}};
@@ -33,7 +34,7 @@ In order to expose an instance :
 j1.bind("calc",c);
 ```
 
-c is now registered and can be accessed by any other node connected to j
+c is now registered and can be accessed by any other node connected to j.
 Let's first create a new node. (This part can/should be run in an other program or on an other machine.)
 ```java
 JElectro j2 = new JElectro("Node-2");
@@ -45,7 +46,7 @@ j2 is now connected to j1 and can retrieve and use the instance c exposed by j1 
 Calc c2 = j2.lookupUnique("calc",Calc.class);
 int sum = c2.sum(12,9);
 ```
-With those last lines, a proxy c is instanciated and will be used as any local java object to execute remotely the methods of the shared instance exposed by j1.
+With those last lines, a proxy c is instantiated and will be used as any local java object to execute remotely the methods of the shared instance exposed by j1.
 
 To release the resources used by any instance j of the Class JElectro, its close method has to be called:
 
@@ -64,8 +65,8 @@ j.connectTo("address3",12003);
 ```
 
 Message propagation will be perform if several instances are not directly connected in order to provide the same kind of service as if they were directly connected. They will be able to expose and share object instances as if they were connected.
-Binding, lookup and method execution will be perfomed transparently.
-This is typicaly the case with a client server architecture. One server and many clients are connected together but clients don't see directly eachother. 
+Binding, lookup and method execution will be performed transparently.
+This is typically the case with a client server architecture. One server and many clients are connected together but clients don't see directly each other. 
 
 | j1 | j2 | j3 |
 |:-------:|:-------:|:-------:|
@@ -77,7 +78,7 @@ This is typicaly the case with a client server architecture. One server and many
 
 ### Remote Callbacks
 
-It is sometimes practical to call a remote service and to be notified later of its execution. Therefor the class JElectroCallback can be used to perform this kind non blocking call :
+It is sometimes practical to call a remote service and to be notified later of its execution. Therefore the class JElectroCallback can be used to perform this kind non blocking call :
 
 First implement the interfaces of the callback and of the service and their implementation :
 ```java
@@ -134,15 +135,17 @@ j1.listenTo(<j2's port>);
 j2.bind("NumberService", new NumberServiceImpl());
 ```
 
-From _Node 1_, the call to the method _computeNumber_ will trigger the method on _Node 2_. _Node 2_ will then call the callback (the lambda expression) in oder to return 1 by 1 every results.  
+From _Node 1_, the call to the method _computeNumber_ will trigger the method on _Node 2_. _Node 2_ will then call the callback (the lambda expression) in order to return 1 by 1 every results.  
 
 
 ### General considerations
 
-- Java 1.8 compatible, previous version of java won't work
+- Java 1.8 compatible, previous versions of java won't work.
 - All objects given in parameter as all returned objects must be serializable ie. they must all implement the Serializable interface.
 - Exceptions are transported and thrown to the caller method. Exception are not encapsulated.
 - Performance depends of course of the network, but also of the size of the object to be transported. On a local computer, a remote method execution with simple java types takes around 0.2 ms for two nodes directly connected.
 
 
 
+#### keywords
+RPC, RMI, Object Messaging, java, Serialization, Socket, TCP, Network.
