@@ -1,14 +1,13 @@
 # JElectro
 
 
-JElectro is a messaging library that provides remote method invocation (RMI) over java objects. 
-It uses socket to connect different JVM, uses java proxies to expose and execute remote objects and serialisation for the 
+JElectro is a messaging library that provides remote method invocation over java objects. 
+It uses socket to connect different JVM, uses serialisation and proxies to expose and execute remote objects.
 
-This java library provides a remote method Invocation (RMI) technic on a global set of separated virtual machines.
-Its purpose is to extends the princip of method invocation to allow any single connected virtual machine to call any method exposed on the network.
-Basicaly this library allows bi-directional binding and remote callbacks and listeners. The notion of client and server is replace with the notion of node; Every node can expose instances that any other node can execute.
+It provides a remote procedure call technic on a global set of separated virtual machines and tries to extend the princips of method invocation to allow any single connected virtual machine to call any method exposed on the network.
+Basicaly this library allows bi-directional binding, remote callbacks and listeners to be executed. The notion of client and server is replace with the notion of node; Every nodes can expose instances that any other node can execute.
 
-## Concept
+## Example
 
 By starting to work with this library you will first instanciate nodes.
 The base instance is called JElectro and you instanciate it by giving it a name:
@@ -22,11 +21,14 @@ Then this new node instance should be able to accept other nodes connections:
 j1.listenTo(12001);
 ```
 
-One can now define an interface and implementing it in order to expose an instance :
+One can now define an interface and implementing it: 
 ```java
 interface Calc { int sum(int a, int b);}
 Calc c = new Calc() {public int sum(int a, int b) {return a+b;}};
+```
 
+In order to expose an instance :
+```java
 // exposing/exporting/binding the instance c of Calc
 j1.bind("calc",c);
 ```
@@ -40,12 +42,45 @@ j2.connectTo("<The address of the machine wich run j1>", 12001);
 
 j2 is now connected to j1 and can retrieve and use the instance c exposed by j1 as it was its own service:
 ```java
-Calc c = j2.lookupUnique("calc",Calc.class);
-int sum = c.sum(12,9);
+Calc c2 = j2.lookupUnique("calc",Calc.class);
+int sum = c2.sum(12,9);
+```
+With those last lines, a proxy c is instanciated and will be used as any local java object to execute remotely the methods of the shared instance exposed by j1.
+
+To release the resources used by any instance j of the Class JElectro, its close method has to be called:
+
+
+## Concept
+
+### Bidirectional Binding and Message Propagation
+
+This framework allows any node to expose any kind of interface implementation. In the previous example j2 could also expose an implementation.
+Any JElectro instance can listen to many port and connect to many other instances 
+```java
+JElectro j = new JElectro("Node-1");
+j.listenTo(12001);
+j.connectTo("address2",12002);
+j.connectTo("address3",12003);
 ```
 
+Message propagation will be perform if several instances are not directly connected in order to provide the same kind of service as if they were directly connected. They will be able to expose and share object instances as if they were connected.
+Binding, lookup and method execution will be perfomed transparently.
+This is typicaly the case with a client server architecture. One server and many clients are connected together but clients don't see directly eachother. 
 
-## Bidirection and propagation
+| j1 | j2 | j3 |
+|:-------:|:-------:|:-------:|
+| connected to j2 | | connected to j2 | 
+| expose object c1 | expose object c2 | expose object c3|
+| can access and execute c2 and c3 | can access and execute c1 and c3 | can access and execute c1 and c2 |
+| to execute c3 message will be sent to j2 and j2 will route them to j3 | | to execute c1 message will be sent to j2 and j2 will route them to j1 |
 
 
+## Remote Callbacks
 
+It is sometimes practical to call a remote service and to be notified later of its execution. Therefor the class JElectroCallback can be used to perform this kind of usage :
+
+First implements the interface of the service :
+```java
+interface PrimeNumber {
+  void getPrimeNumberSmallerOrEqualsTo(long l, PrimeNumberCallback callback) {
+  
