@@ -1,0 +1,114 @@
+<project name="JElectroIII" default="jar" basedir=".">
+
+
+	<property file="build.properties" />
+
+	<target name="clean">
+		<delete dir="${bin}" />
+		<delete dir="${testbin}" />
+		<delete dir="${target}" />
+		<delete dir="${deploy}" />
+	</target>
+
+
+
+	<target name="init">
+		<mkdir dir="${bin}" />
+		<mkdir dir="${testbin}" />
+		<mkdir dir="${target}" />
+		<mkdir dir="${deploy}" />
+		<mkdir dir="${target.report.dir}" />
+		<copy file="${miscellaneous.jar}" todir="${lib}" failonerror="false" />
+
+		<path id="classpath.id">
+			<fileset dir="${lib}" id="jars.id">
+				<include name="*.jar" />
+			</fileset>
+			<pathelement path="${bin}" />
+			<pathelement path="${testbin}" />
+			<fileset dir="${junit.path}">
+				<include name="junit.jar" />
+			</fileset>
+		</path>
+
+	</target>
+
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${bin}" debug="true" classpathref="classpath.id" target="1.8" />
+	</target>
+
+	<target name="compile.test" depends="compile">
+		<javac srcdir="${testsrc}" destdir="${testbin}" includeantruntime="true" debug="true" classpathref="classpath.id" target="1.6" />
+
+	</target>
+
+	<target name="test" depends="compile, compile.test">
+
+
+		<junit showoutput="false" printsummary="yes" haltonerror="yes" haltonfailure="yes">
+			<classpath refid="classpath.id" />
+
+			<batchtest todir="${target.report.dir}">
+				<fileset dir="${testbin}">
+					<include name="**/*Test*" />
+					<exclude name="**/*$*" />
+				</fileset>
+			</batchtest>
+			<formatter type="plain" usefile="false" />
+			<formatter type="xml" />
+		</junit>
+		<tstamp>
+		      <format property="dateTime" pattern="yyyy-MM-dd_hh-mm"		              />
+		  </tstamp>
+		<mkdir dir="${target.report.dir}/${dateTime}.html" />
+		<junitreport todir="${target.report.dir}">
+			<fileset dir="${target.report.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report todir="${target.report.dir}/${dateTime}.html" />
+		</junitreport>
+
+
+
+
+	</target>
+
+
+	<target name="jar" depends="compile">
+
+		<pathconvert property="jar.classpath" refid="classpath.id" pathsep=":">
+			<flattenmapper />
+		</pathconvert>
+
+		<jar destfile="${target}/${jarname}">
+
+			<fileset dir="${bin}">
+				<include name="**/*.class" />
+			</fileset>
+			<fileset dir="${src}">
+				<include name="**/*.java" />
+			</fileset>
+		</jar>
+
+	</target>
+
+
+	<target name="zip" depends="jar">
+
+		<zip destfile="${target}/${zipname}">
+			<zipfileset dir="${src}" prefix="src" />
+			<zipfileset dir="${testsrc}" prefix="test" />
+			<zipfileset dir="${lib}" prefix="lib" />
+			<zipfileset dir="${target}" prefix="lib" includes="${jarname}" />
+
+			<zipfileset dir="." includes="build.*" />
+			<zipfileset dir="." includes="ReadMe" />
+
+		</zip>
+	</target>
+
+
+
+
+</project>
