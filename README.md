@@ -75,12 +75,38 @@ This is typicaly the case with a client server architecture. One server and many
 | to execute c3 message will be sent to j2 and j2 will route them to j3 | | to execute c1 message will be sent to j2 and j2 will route them to j1 |
 
 
-## Remote Callbacks
+### Remote Callbacks
 
 It is sometimes practical to call a remote service and to be notified later of its execution. Therefor the class JElectroCallback can be used to perform this kind of usage :
 
-First implements the interface of the service :
+First implement the interfaces of the callback and of the service and their implementation :
 ```java
-interface PrimeNumber {
-  void getPrimeNumberSmallerOrEqualsTo(long l, PrimeNumberCallback callback) {
-  
+// the callback interface needs to extends the class JElectroCallback to be proxified before the execution message is send
+interface NumberCallback extends JElectroCallback {
+  void onNumber(long number);
+}
+
+interface NumberService {
+  void computeNumber(long number, NumberCallback callback);
+}
+
+
+class NumberCallbackImpl implements NumberCallback {
+  public void onNumber(long number) {
+    System.out.println(""Received "+ number);
+  }
+}
+
+class NumberServiceImpl implements NumberService {
+  public void computeNumber(long number, NumberCallback callback) {
+    long l = 0;
+    while (l<number) {
+      if (isPrime(l)) 
+        callback.onNumber(l);
+      l++;
+    }
+  }
+}
+``` 
+
+
