@@ -7,7 +7,7 @@ It uses socket to connect different JVM, uses serialisation and proxies to expos
 It provides a remote procedure call technic on a global set of separated virtual machines and tries to extend the princips of method invocation to allow any single connected virtual machine to call any method exposed on the network.
 Basicaly this library allows bi-directional binding, remote callbacks and listeners to be executed. The notion of client and server is replace with the notion of node; Every nodes can expose instances that any other node can execute.
 
-## Example
+## First Overview
 
 By starting to work with this library you will first instanciate nodes.
 The base instance is called JElectro and you instanciate it by giving it a name:
@@ -77,11 +77,11 @@ This is typicaly the case with a client server architecture. One server and many
 
 ### Remote Callbacks
 
-It is sometimes practical to call a remote service and to be notified later of its execution. Therefor the class JElectroCallback can be used to perform this kind of usage :
+It is sometimes practical to call a remote service and to be notified later of its execution. Therefor the class JElectroCallback can be used to perform this kind non blocking call :
 
 First implement the interfaces of the callback and of the service and their implementation :
 ```java
-// the callback interface needs to extends the class JElectroCallback to be proxified before the execution message is send
+// the callback interface needs to extends the class JElectroCallback to be proxified before the execution message to be sent
 interface NumberCallback extends JElectroCallback {
   void onNumber(long number);
 }
@@ -99,14 +99,56 @@ class NumberCallbackImpl implements NumberCallback {
 
 class NumberServiceImpl implements NumberService {
   public void computeNumber(long number, NumberCallback callback) {
-    long l = 0;
-    while (l<number) {
-      if (isPrime(l)) 
-        callback.onNumber(l);
-      l++;
-    }
+   
+    // As this call should be non blocking, the process has to be run in an other thread.
+    
+    new Thread() {
+      public void run() {
+        long l = 0;
+        while (l<number) {
+          if (isPrime(l)) 
+            // A call to the callback is performed : the caller of the method will be notified.
+            callback.onNumber(l);
+          l++;
+        }
+      }
+    }.start();
   }
 }
 ``` 
+
+The last class implemented is non blocking. All the computations are done in a separate process. This is not necessary.
+
+Building the two part of the code that will use those classes gives something like that :
+
+
+ - Node 1 : caller node 
+```java 
+JElectro j1 = new JElectro("Node-1");
+j1.connectTo("<j2's address>", <j2's port>);
+NumberService ns = j1.lookupUnique("NumberService");
+// Since the callback interface is defined in NumberService a lambda expression is possible :
+List<Long> numberList = new ArrayList<>();
+ns.computeNumber(11, (l) -> numberList.add(l));
+// the population of numberList is in progress....
+```
+
+ - Node 2 : callee node
+```java 
+JElectro j2 = new JElectro("Node-2");
+j1.listenTo(<j2's port>);
+j2.bind("NumberService", new NumberServiceImpl());
+```
+
+From _Node 1_, the call to the method _computeNumber_ will trigger the method on _Node 2_. _Node 2_ will then call the callback (the lambda expression) in oder to return 1 by 1 every results.  
+
+
+### General considerations
+
+- Java 1.8 compatible, previous version of java won't work
+- All objects given in parameter as all returned objects must be serializable ie. they must all implement the Serializable interface.
+- Exceptions are transported and thrown to the caller method. Exception are not encapsulated.
+- Performance depends of course of the network, but also of the size of the object to be transported. On a local computer, a remote method execution with simple java types takes around 0.2 ms for two nodes directly connected.
+
 
 
