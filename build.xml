@@ -89,6 +89,11 @@
 			<fileset dir="${src}">
 				<include name="**/*.java" />
 			</fileset>
+			<zipfileset src="${miscellaneous.jar}" includes="**/*.class" />
+			
+			
+			
+			
 		</jar>
 
 	</target>
