@@ -81,20 +81,14 @@ It is sometimes practical to call a remote service and to be notified later of i
 
 First implement the interfaces of the callback and of the service and their implementation :
 ```java
-// the callback interface needs to extends the class JElectroCallback to be proxified before the execution message to be sent
+// The callback interface needs to extends the class JElectroCallback to be proxified 
+// before the execution message to be sent
 interface NumberCallback extends JElectroCallback {
   void onNumber(long number);
 }
 
 interface NumberService {
   void computeNumber(long number, NumberCallback callback);
-}
-
-
-class NumberCallbackImpl implements NumberCallback {
-  public void onNumber(long number) {
-    System.out.println(""Received "+ number);
-  }
 }
 
 class NumberServiceImpl implements NumberService {
