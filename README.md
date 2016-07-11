@@ -37,6 +37,8 @@ Calc c = new Calc() {
 In order to expose an instance :
 ```java
 // exposing/exporting/binding the instance c of Calc
+// the first argument of this call is the name of the shared instance,
+// the second is the instance itself.
 j1.bind("calc",c);
 ```
 
@@ -49,6 +51,8 @@ j2.connectTo("<The address of the machine wich run j1>", 12001);
 
 j2 is now connected to j1 and can retrieve and use the instance c exposed by j1 as it was its own service:
 ```java
+// the first argument of this call is the name of the instance as defined by the bind method.
+// the second argument is the interface class itself to indicate how the returned object needs to be proxified.
 Calc c2 = j2.lookupUnique("calc",Calc.class);
 int sum = c2.sum(12,9);
 ```
