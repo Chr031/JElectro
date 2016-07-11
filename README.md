@@ -42,7 +42,7 @@ In order to expose an instance :
 j1.bind("calc",c);
 ```
 
-c is now registered and can be accessed by any other node connected to j.
+c is now registered and can be accessed by any other node connected to j1.
 Let's first create a new node. (This part can/should be run in an other program or on an other machine.)
 ```java
 JElectro j2 = new JElectro("Node-2");
