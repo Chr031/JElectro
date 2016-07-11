@@ -24,8 +24,14 @@ j1.listenTo(12001);
 
 One can now define an interface and implement it: 
 ```java
-interface Calc { int sum(int a, int b);}
-Calc c = new Calc() {public int sum(int a, int b) {return a+b;}};
+// The service interface
+interface Calc { 
+  int sum(int a, int b);
+}
+// Its anonymous implementation
+Calc c = new Calc() {
+  public int sum(int a, int b) {return a+b;}
+};
 ```
 
 In order to expose an instance :
