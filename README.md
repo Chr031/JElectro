@@ -73,7 +73,7 @@ This is typically the case with a client server architecture. One server and man
 | connected to j2 | | connected to j2 | 
 | expose object c1 | expose object c2 | expose object c3|
 | can access and execute c2 and c3 | can access and execute c1 and c3 | can access and execute c1 and c2 |
-| to execute c3 message will be sent to j2 and j2 will route them to j3 | | to execute c1 message will be sent to j2 and j2 will route them to j1 |
+| to execute c3 messages will be sent to j2 and j2 will route them to j3 | | to execute c1 messages will be sent to j2 and j2 will route them to j1 |
 
 
 ### Remote Callbacks
