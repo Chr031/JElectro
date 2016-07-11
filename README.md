@@ -46,7 +46,7 @@ c is now registered and can be accessed by any other node connected to j.
 Let's first create a new node. (This part can/should be run in an other program or on an other machine.)
 ```java
 JElectro j2 = new JElectro("Node-2");
-j2.connectTo("<The address of the machine wich run j1>", 12001);
+j2.connectTo("<The address of the machine which run j1>", 12001);
 ```
 
 j2 is now connected to j1 and can retrieve and use the instance c exposed by j1 as it was its own service:
