@@ -5,6 +5,6 @@
 	<classpathentry kind="src" output="bin-sample" path="sample"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Tools"/>
+	<classpathentry kind="lib" path="lib/miscellaneous.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

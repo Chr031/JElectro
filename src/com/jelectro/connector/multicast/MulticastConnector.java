@@ -3,11 +3,8 @@ package com.jelectro.connector.multicast;
 import java.io.IOException;
 import java.net.BindException;
 import java.net.UnknownHostException;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 
-import com.jelectro.JElectroMulticastTest;
 import com.jelectro.connector.IConnector;
 import com.jelectro.exception.JElectroException;
 import com.jelectro.node.INodeListener;
