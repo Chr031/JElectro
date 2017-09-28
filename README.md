@@ -95,15 +95,15 @@ First implement the interfaces of the callback and of the service and their impl
 // The callback interface needs to extends the class JElectroCallback to be proxified 
 // before the execution message to be sent
 interface NumberCallback extends JElectroCallback {
-  void onNumber(long number);
+  void onPrimeNumber(long number);
 }
 
 interface NumberService {
-  void computeNumber(long number, NumberCallback callback);
+  void findPrimeNumbers(long number, NumberCallback callback);
 }
 
 class NumberServiceImpl implements NumberService {
-  public void computeNumber(long number, NumberCallback callback) {
+  public void findPrimeNumbers(long number, NumberCallback callback) {
    
     // As this call should be non blocking, the process has to be run in an other thread.
     
@@ -113,7 +113,7 @@ class NumberServiceImpl implements NumberService {
         while (l<number) {
           if (isPrime(l)) 
             // A call to the callback is performed : the caller of the method will be notified.
-            callback.onNumber(l);
+            callback.onPrimeNumber(l);
           l++;
         }
       }
@@ -134,7 +134,7 @@ j1.connectTo("<j2's address>", <j2's port>);
 NumberService ns = j1.lookupUnique("NumberService");
 // Since the callback interface is defined in NumberService a lambda expression is possible :
 List<Long> numberList = new ArrayList<>();
-ns.computeNumber(11, (l) -> numberList.add(l));
+ns.findPrimeNumbers(11, (l) -> numberList.add(l));
 // the population of numberList is in progress....
 ```
 
