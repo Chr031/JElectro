@@ -18,17 +18,7 @@ public class StubReference<S> {
 	private StubProxyHandler<S> stubProxyHandler;
 	private final Object lock = new Object(); 
 	
-	@Deprecated
-	public StubReference(String name, Class<S> stubInterface, NodeKey locationNodeKey) {
-		super();
-		this.node = null;
-		this.stubName = name;
-		this.stubInterface = stubInterface;
-		this.locationNodeKey = locationNodeKey;
-		nodePaths = new NodePathList();
-					
-	}
-
+	
 	public StubReference(Node node, String stubName, Class<S> stubInterface, NodePath stubNodePath) {
 		this.node = node;
 		this.stubName = stubName;

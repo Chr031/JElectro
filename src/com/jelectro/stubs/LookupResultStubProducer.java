@@ -1,15 +1,13 @@
 package com.jelectro.stubs;
 
-import org.blue.tools.utils.WeakFireListeners;
+import org.apache.log4j.Logger;
 
-import com.jelectro.JElectro;
 import com.jelectro.message.LookupResultMessage;
 import com.jelectro.message.response.IResponseListener;
 import com.jelectro.message.response.MessageResponseMulti;
 import com.jelectro.message.response.Response;
 import com.jelectro.node.Node;
-
-import tools.logger.Logger;
+import com.jelectro.utils.WeakFireListeners;
 
 public class LookupResultStubProducer<S> implements IElementProducer<StubReference<S>>, IResponseListener<LookupResultMessage> {
 

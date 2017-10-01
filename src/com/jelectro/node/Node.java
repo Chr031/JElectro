@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.blue.tools.utils.WeakFireListeners;
+import org.apache.log4j.Logger;
 
 import com.jelectro.JElectro;
 import com.jelectro.connector.Connector;
@@ -42,8 +42,7 @@ import com.jelectro.stubs.LookupResultStubProducer;
 import com.jelectro.stubs.StubContainer;
 import com.jelectro.stubs.StubSet;
 import com.jelectro.stubs.StubSetListener;
-
-import tools.logger.Logger;
+import com.jelectro.utils.WeakFireListeners;
 
 /**
  * Kind of the main class of this project.
@@ -137,17 +136,42 @@ public class Node implements IConnectorListener {
 		return stubContainer.removeStub(stubName);
 
 	}
-
+	
+	/**
+	 * This method refresh the list already present in the given stubset 
+	 * @param stubset
+	 */
+	public <S> void relookup(StubSet<S> stubset) {
+		// TODO
+	}
+	
+	@SuppressWarnings("unchecked")
 	public <S> StubSet<S> lookup(String regexLookupString, Class<S> stubInterface, StubSetListener<S>... stubSetListeners)
+			throws IOException, JElectroException {
+		
+		final FutureStubSet<S> futureStubSet = new FutureStubSet<S>(regexLookupString, stubInterface);
+		
+		if (stubSetListeners != null && stubSetListeners.length > 0 && stubSetListeners[0] != null)
+			futureStubSet.addStubSetListener(stubSetListeners);
+		
+		lookup(futureStubSet, regexLookupString, stubInterface);
+		
+		return futureStubSet;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <S> void lookup(FutureStubSet<S> futureStubSet, String regexLookupString, Class<S> stubInterface, StubSetListener<S>... stubSetListeners)
 			throws IOException, JElectroException {
 
 		final LookupMessage locateMessage = new LookupMessage(regexLookupString, stubInterface);
 		final MessageResponseMulti<LookupResultMessage> response = new MessageResponseMulti<LookupResultMessage>(
 				locateMessage.getMessageId());
 		final LookupResultStubProducer<S> stubProducer = new LookupResultStubProducer<S>(this, stubInterface, response);
-		final StubSet<S> futureStubSet = new FutureStubSet<S>(stubProducer);
-		if (stubSetListeners != null && stubSetListeners.length > 0 && stubSetListeners[0] != null)
-			futureStubSet.addStubSetListener(stubSetListeners);
+		
+		//final StubSet<S> futureStubSet = new FutureStubSet<S>(stubProducer);
+		
+		stubProducer.addElementProducerListener(futureStubSet);
+		
 
 		// TODO see if dummy local binding is a option !
 		/**
@@ -161,8 +185,7 @@ public class Node implements IConnectorListener {
 		// send the message after the FutureStubSet instantiation in order not
 		// to loose any messages.
 		this.broadcastMessageRegisterResponse(locateMessage, response);
-
-		return futureStubSet;
+	
 
 	}
 

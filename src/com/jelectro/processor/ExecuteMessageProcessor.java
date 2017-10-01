@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.jelectro.JElectro;
+import org.apache.log4j.Logger;
+
 import com.jelectro.exception.JElectroException;
 import com.jelectro.handler.StubCallbackArgument;
 import com.jelectro.message.ExecuteMessage;
@@ -13,8 +14,6 @@ import com.jelectro.message.MessageTransporter;
 import com.jelectro.message.response.IMessageResponse;
 import com.jelectro.message.response.MessageResponseSingle;
 import com.jelectro.node.Node;
-
-import tools.logger.Logger;
 
 public class ExecuteMessageProcessor {
 

@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -14,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.jelectro.JElectro;
 import com.jelectro.exception.JElectroException;
 import com.jelectro.exception.PathNotAvailableException;
 import com.jelectro.node.Node;
@@ -25,8 +25,6 @@ import com.jelectro.testobjects.CalcImpl;
 import com.jelectro.testobjects.Prime;
 import com.jelectro.testobjects.PrimeImpl;
 import com.jelectro.testobjects.PrimeSender;
-
-import tools.logger.Logger;
 
 @RunWith(Parameterized.class)
 public class JElectroBaseTest {
@@ -40,7 +38,7 @@ public class JElectroBaseTest {
 
 	@BeforeClass
 	public static void initTest() {
-		Logger.setBaseConfiguration();
+		//Logger.setBaseConfiguration();
 	}
 
 	@Before

@@ -3,23 +3,19 @@ package com.jelectro.utils;
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jelectro.JElectro;
-import com.jelectro.utils.MulticastMessenger;
 import com.jelectro.utils.MulticastMessenger.MulticastResponseListener;
-
-import tools.logger.Logger;
 
 public class MulticastMessengerTest {
 
 	
 	@BeforeClass 
 	public static void init() {
-		Logger.setBaseConfiguration();
+		
 		
 		JElectro.setDebugMode(true);
 	}

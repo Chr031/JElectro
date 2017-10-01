@@ -5,14 +5,14 @@ import java.net.BindException;
 import java.net.UnknownHostException;
 import java.util.function.BooleanSupplier;
 
+import org.apache.log4j.Logger;
+
 import com.jelectro.connector.IConnector;
 import com.jelectro.exception.JElectroException;
 import com.jelectro.node.INodeListener;
 import com.jelectro.node.Node;
 import com.jelectro.utils.MulticastMessenger;
 import com.jelectro.utils.MulticastMessenger.MulticastResponseListener;
-
-import tools.logger.Logger;
 
 public class MulticastConnector {
 

@@ -4,12 +4,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.blue.tools.utils.WeakFireListeners;
+import org.apache.log4j.Logger;
 
-import com.jelectro.JElectro;
 import com.jelectro.message.Message;
-
-import tools.logger.Logger;
+import com.jelectro.utils.WeakFireListeners;
 
 public class MessageResponseMulti<M extends Message> implements IMessageResponse<M> {
 

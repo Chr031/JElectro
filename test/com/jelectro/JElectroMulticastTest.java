@@ -4,20 +4,18 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import com.jelectro.JElectro;
 import com.jelectro.connector.multicast.MulticastConnector.ConnectionState;
 import com.jelectro.exception.JElectroException;
 import com.jelectro.stubs.StubSet;
 import com.jelectro.testobjects.Calc;
 import com.jelectro.testobjects.CalcImpl;
-
-import tools.logger.Logger;
 
 @RunWith(Parameterized.class)
 public class JElectroMulticastTest {
@@ -31,7 +29,7 @@ public class JElectroMulticastTest {
 
 	@BeforeClass
 	public static void initTest() {
-		Logger.setBaseConfiguration();
+		//Logger.setBaseConfiguration();
 		JElectro.setDebugMode(true);
 	}
 

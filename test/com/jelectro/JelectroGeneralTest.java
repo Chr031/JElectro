@@ -15,13 +15,11 @@ import com.jelectro.stubs.IStub;
 import com.jelectro.testobjects.Waiter;
 import com.jelectro.testobjects.WaiterImpl;
 
-import tools.logger.Logger;
-
 public class JelectroGeneralTest {
 
 	@BeforeClass
 	public static void initTest() {
-		Logger.setBaseConfiguration();
+		//Logger.setBaseConfiguration();
 	}
 
 	@Before

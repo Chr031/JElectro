@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.jelectro.connector.ConnectorKey;
 import com.jelectro.connector.IConnector;
 import com.jelectro.connector.multicast.MulticastConnector;
@@ -17,8 +19,6 @@ import com.jelectro.node.NodeKey;
 import com.jelectro.node.NodeService;
 import com.jelectro.stubs.StubSet;
 import com.jelectro.stubs.StubSetListener;
-
-import tools.logger.Logger;
 
 public class JElectro implements Closeable {
 	/**
@@ -34,11 +34,11 @@ public class JElectro implements Closeable {
 	private static final Logger log = Logger.getLogger(JElectro.class);
 
 	public static void setDebugMode(boolean debugMode) {
-		Logger.getLogMode().setDebugMode(debugMode);
+		//Logger.getLogMode().setDebugMode(debugMode);
 	}
 
 	public static void setInfoMode(boolean infoMode) {
-		Logger.getLogMode().setInfoMode(infoMode);
+		//Logger.getLogMode().setInfoMode(infoMode);
 	}
 
 	private final String nodeName;

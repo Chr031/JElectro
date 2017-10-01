@@ -2,17 +2,15 @@ package com.jelectro;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.jelectro.JElectro;
 import com.jelectro.exception.JElectroException;
 import com.jelectro.testobjects.Calc;
 import com.jelectro.testobjects.CalcImpl;
 import com.jelectro.utils.InstanceCache;
-
-import tools.logger.Logger;
 
 public class JElectroStressTest {
 
@@ -22,7 +20,7 @@ public class JElectroStressTest {
 
 	@BeforeClass
 	public static void initTest() {
-		Logger.setBaseConfiguration();
+		//Logger.setBaseConfiguration();
 		instanceNbr = 100;
 		nbrOfCalls = 1000;
 	}
@@ -101,6 +99,8 @@ public class JElectroStressTest {
 	@Test
 	public void stressTest_100Nodes_InStar() throws IOException, JElectroException {
 
+		JElectro.setDebugMode(true);
+		
 		JElectro[] nodes = new JElectro[instanceNbr];
 		try {
 			for (int i = 0; i < instanceNbr; i++) {

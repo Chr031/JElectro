@@ -3,29 +3,32 @@ package com.jelectro.stubs;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.blue.tools.utils.WeakFireListeners;
+import org.apache.log4j.Logger;
 
 import com.jelectro.JElectro;
-
-import tools.logger.Logger;
+import com.jelectro.utils.WeakFireListeners;
 
 public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<StubReference<S>> {
 
 	private static final Logger log = Logger.getLogger(FutureStubSet.class);
-
-	private final IElementProducer<StubReference<S>> stubProducer;
+	
+	private final String regexLookupString;
+	private final Class<S> stubInterface;
+	
 	private final List<StubReference<S>> stubReferenceList;
 	private final Object lock;
 	private final WeakFireListeners<StubSetListener<S>> stubSetListeners;
 
-	public FutureStubSet(IElementProducer<StubReference<S>> stubProducer) {
-		this.stubProducer = stubProducer;
-		this.stubReferenceList = new ArrayList<StubReference<S>>();
+	
+	public FutureStubSet(String regexLookupString, Class<S> stubInterface) {
+		this.stubReferenceList = new CopyOnWriteArrayList<>();
 		this.lock = new Object();
-		stubSetListeners = new WeakFireListeners<>();
+		this.stubSetListeners = new WeakFireListeners<>();
+		this.regexLookupString = regexLookupString;
+		this.stubInterface = stubInterface;	
 		
-		stubProducer.addElementProducerListener(this);
 	}
 
 	@Override
@@ -58,7 +61,7 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 	 * @param i
 	 */
 	@Override
-	public void waitFor(int i) {
+	public boolean waitFor(int i) {
 		int count = 0, maxCount = 100; 
 		if (stubReferenceList.size() < i) {
 			synchronized (lock) {
@@ -70,8 +73,10 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 					// can be ignored !0!
 					log.debug("Waitfor interrupted", e);
 				}
+				return stubReferenceList.size()>=i;
 			}
 		}
+		return true;
 	}
 
 	@Override
@@ -99,10 +104,7 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 		}
 	}
 
-	public IElementProducer<StubReference<S>> getStubProducer() {
-		return stubProducer;
-	}
-
+	
 	@Override
 	public int size() {
 		return stubReferenceList.size();
@@ -110,7 +112,11 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 
 	@Override
 	public S get(int i) {
-		waitFor(i + 1);
+		boolean wait1 = waitFor(i + 1);
+		if (!wait1)
+			wait1 = waitFor(i + 1);
+		if (!wait1) 
+			log.debug("Stubs are not all present");
 		return stubReferenceList.get(i).getStubProxy();
 	}
 

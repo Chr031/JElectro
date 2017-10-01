@@ -3,7 +3,8 @@ package com.jelectro.processor;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.jelectro.JElectro;
+import org.apache.log4j.Logger;
+
 import com.jelectro.connector.ConnectorKey;
 import com.jelectro.message.LookupMessage;
 import com.jelectro.message.LookupResultMessage;
@@ -12,8 +13,6 @@ import com.jelectro.message.response.IMessageResponse;
 import com.jelectro.node.Node;
 import com.jelectro.node.NodeKey;
 import com.jelectro.node.NodePath;
-
-import tools.logger.Logger;
 
 public class LookupMessageProcessor {
 
