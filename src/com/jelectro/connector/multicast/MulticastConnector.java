@@ -146,7 +146,7 @@ public class MulticastConnector {
 					}
 				}
 			};
-			node.addNodeLIstener(nodeListener);
+			node.addNodeListener(nodeListener);
 			
 		}
 

@@ -8,6 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.blue.tools.utils.WeakFireListeners;
+
+import com.jelectro.ConnectionListener;
+import com.jelectro.ConnectionListener.ConnectionEvent;
+
 import tools.logger.Logger;
 
  
@@ -17,20 +22,37 @@ public class ConnectorContainer {
 	private static final Logger log = Logger.getLogger(ConnectorContainer.class);
 
 	private final Map<ConnectorKey, IConnector> connectorMap;
+	
+	private WeakFireListeners<ConnectionListener> weakConectionListenerList;
 
 	public ConnectorContainer() {
 		connectorMap = new ConcurrentHashMap<ConnectorKey, IConnector>();
+		weakConectionListenerList = new WeakFireListeners<>(ConnectionListener.class);
 	}
 
 	public void addConnector(IConnector connector) {
 		connectorMap.put(connector.getKey(), connector);
 		log.debug("In " + this + " Connector added " + connector.getKey());
-
+		 
+		// TODO shall be reworked with an async possibility 
+		new Thread( () -> {
+			weakConectionListenerList.getFireProxy().onConnectionEvent(ConnectionEvent.CONNECTION);
+		}).start();
 	}
 
 	public void removeConnector(IConnector connector) {
 		connectorMap.remove(connector.getKey());
 		log.debug("In " + this + " Connector removed " + connector.getKey());
+		
+		// TODO shall be reworked with an async possibility 
+		new Thread( () -> {
+			weakConectionListenerList.getFireProxy().onConnectionEvent(ConnectionEvent.DISCONNECTION);
+		}).start();
+	}
+
+	public void addConnectionListener(ConnectionListener connectionListener) {
+		
+		weakConectionListenerList.addListener(connectionListener);
 	}
 
 	public IConnector getConnector(ConnectorKey connectorKey) {

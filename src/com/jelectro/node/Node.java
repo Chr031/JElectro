@@ -41,7 +41,7 @@ import com.jelectro.stubs.FutureStubSet;
 import com.jelectro.stubs.LookupResultStubProducer;
 import com.jelectro.stubs.StubContainer;
 import com.jelectro.stubs.StubSet;
-import com.jelectro.stubs.StubSet.IStubSetListener;
+import com.jelectro.stubs.StubSetListener;
 
 import tools.logger.Logger;
 
@@ -102,7 +102,7 @@ public class Node implements IConnectorListener {
 		return this.nodeKey;
 	}
 
-	public void addNodeLIstener(INodeListener nl) {
+	public void addNodeListener(INodeListener nl) {
 		nodeListeners.addListener(nl);
 	}
 
@@ -138,7 +138,7 @@ public class Node implements IConnectorListener {
 
 	}
 
-	public <S> StubSet<S> lookup(String regexLookupString, Class<S> stubInterface, IStubSetListener<S>... stubSetListeners)
+	public <S> StubSet<S> lookup(String regexLookupString, Class<S> stubInterface, StubSetListener<S>... stubSetListeners)
 			throws IOException, JElectroException {
 
 		final LookupMessage locateMessage = new LookupMessage(regexLookupString, stubInterface);

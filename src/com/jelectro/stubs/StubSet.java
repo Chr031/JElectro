@@ -18,10 +18,5 @@ public interface StubSet<S> extends Iterable<S> {
 
 	public abstract void waitFor(int i);
 	
-	abstract void addStubSetListener(IStubSetListener<S>... listeners);
-	
-	public interface IStubSetListener<St> {
-		void onStubReceived(St stub);
-		void onStubPathUpdated(St stub);
-	}
+	abstract void addStubSetListener(StubSetListener<S>... listeners);
 }

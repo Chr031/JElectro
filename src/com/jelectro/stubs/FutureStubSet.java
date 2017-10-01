@@ -17,7 +17,7 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 	private final IElementProducer<StubReference<S>> stubProducer;
 	private final List<StubReference<S>> stubReferenceList;
 	private final Object lock;
-	private final WeakFireListeners<IStubSetListener<S>> stubSetListeners;
+	private final WeakFireListeners<StubSetListener<S>> stubSetListeners;
 
 	public FutureStubSet(IElementProducer<StubReference<S>> stubProducer) {
 		this.stubProducer = stubProducer;
@@ -115,7 +115,7 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 	}
 
 	
-	public void addStubSetListener(IStubSetListener<S>... listeners) {
+	public void addStubSetListener(StubSetListener<S>... listeners) {
 		
 		stubSetListeners.addListeners(listeners);
 		log.debug("StubSetListener added");

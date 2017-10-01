@@ -16,7 +16,7 @@ import com.jelectro.node.Node;
 import com.jelectro.node.NodeKey;
 import com.jelectro.node.NodeService;
 import com.jelectro.stubs.StubSet;
-import com.jelectro.stubs.StubSet.IStubSetListener;
+import com.jelectro.stubs.StubSetListener;
 
 import tools.logger.Logger;
 
@@ -106,15 +106,6 @@ public class JElectro implements Closeable {
 		return this;
 	}
 
-	public List<ConnectorKey> getActiveConnections() {
-		List<ConnectorKey> keys = new ArrayList<ConnectorKey>();
-		Iterator<IConnector> iter = node.getConnectorContainer().iterator();
-		while (iter.hasNext()) {
-			keys.add(iter.next().getKey());
-		}
-		return keys;
-	}
-
 	/**
 	 * Connect to a remote instance located on host:port.
 	 * 
@@ -128,6 +119,22 @@ public class JElectro implements Closeable {
 		return this;
 	}
 
+	public List<ConnectorKey> getActiveConnections() {
+		List<ConnectorKey> keys = new ArrayList<ConnectorKey>();
+		Iterator<IConnector> iter = node.getConnectorContainer().iterator();
+		while (iter.hasNext()) {
+			keys.add(iter.next().getKey());
+		}
+		return keys;
+	}
+
+	public void addConnectionListener(ConnectionListener connectionListener) {
+		
+		node.getConnectorContainer().addConnectionListener(connectionListener);
+		
+		
+	}
+
 	public <S> void bind(String stubName, S stubInstance) throws StubNameAlreadyExistsException {
 		node.bind(stubName, stubInstance);
 	}
@@ -137,18 +144,18 @@ public class JElectro implements Closeable {
 	}
 
 	public <S> StubSet<S> lookup(String regexLocateString, Class<S> stubInterface) throws IOException, JElectroException {
-		return lookup(regexLocateString, stubInterface, (IStubSetListener<S>) null);
+		return lookup(regexLocateString, stubInterface, (StubSetListener<S>) null);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <S> StubSet<S> lookup(String regexLocateString, Class<S> stubInterface, IStubSetListener<S> stubSetListener)
+	public <S> StubSet<S> lookup(String regexLocateString, Class<S> stubInterface, StubSetListener<S> stubSetListener)
 			throws IOException, JElectroException {
 		return node.lookup(regexLocateString, stubInterface, stubSetListener);
 	}
 
-	public <S> StubSet<S> lookup(String regexLocateString, Class<S> stubInterface, IStubSetListener<S>... stubSetListener)
+	public <S> StubSet<S> lookup(String regexLocateString, Class<S> stubInterface, StubSetListener<S>... stubSetListeners)
 			throws IOException, JElectroException {
-		return node.lookup(regexLocateString, stubInterface, stubSetListener);
+		return node.lookup(regexLocateString, stubInterface, stubSetListeners);
 	}
 
 	public <S> S lookupUnique(String regexLocateString, Class<S> stubInterface) throws IOException, JElectroException {
