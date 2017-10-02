@@ -3,3 +3,5 @@
 *.class
 /bin-sample/
 /target/report/
+*.log
+*.log.*
