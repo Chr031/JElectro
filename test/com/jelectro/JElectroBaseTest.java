@@ -33,7 +33,7 @@ public class JElectroBaseTest {
 
 	@Parameterized.Parameters
 	public static List<Object[]> data() {
-		return Arrays.asList(new Object[1][0]);
+		return Arrays.asList(new Object[1000][0]);
 	}
 
 	@BeforeClass
@@ -69,8 +69,8 @@ public class JElectroBaseTest {
 			j1.listenTo(12001);
 			j2.connectTo("localhost", 12001);
 
-			Assert.assertEquals(1, j1.getActiveConnections().size());
-			Assert.assertEquals(1, j2.getActiveConnections().size());
+			Assert.assertEquals(1, j1.waitForActiveConnections(1));
+			Assert.assertEquals(1, j2.waitForActiveConnections(1));
 
 			log.info("Connection successfull");
 
@@ -109,8 +109,9 @@ public class JElectroBaseTest {
 			j1.listenTo(12001);
 			j2.connectTo("localhost", 12001);
 
-			Assert.assertEquals(1, j1.getActiveConnections().size());
-			Assert.assertEquals(1, j2.getActiveConnections().size());
+			Assert.assertEquals(1, j1.waitForActiveConnections(1));
+			Assert.assertEquals(1, j2.waitForActiveConnections(1));
+			
 			log.info("Connection successfull");
 
 			Calc add = new CalcImpl();
@@ -145,9 +146,9 @@ public class JElectroBaseTest {
 
 			Thread.yield();
 
-			Assert.assertEquals(1, j1.getActiveConnections().size());
-			Assert.assertEquals(2, j2.getActiveConnections().size());
-			Assert.assertEquals(1, j3.getActiveConnections().size());
+			Assert.assertEquals(1, j1.waitForActiveConnections(1));
+			Assert.assertEquals(2, j2.waitForActiveConnections(2));
+			Assert.assertEquals(1, j3.waitForActiveConnections(1));
 
 			log.info("Connection successfull");
 
@@ -185,10 +186,10 @@ public class JElectroBaseTest {
 			j3.listenTo(12002);
 			j4.connectTo("localhost", 12002);
 
-			Assert.assertEquals(1, j1.getActiveConnections().size());
-			Assert.assertEquals(2, j2.getActiveConnections().size());
-			Assert.assertEquals(2, j3.getActiveConnections().size());
-			Assert.assertEquals(1, j4.getActiveConnections().size());
+			Assert.assertEquals(1, j1.waitForActiveConnections(1));
+			Assert.assertEquals(2, j2.waitForActiveConnections(2));
+			Assert.assertEquals(2, j3.waitForActiveConnections(2));
+			Assert.assertEquals(1, j4.waitForActiveConnections(1));
 
 			log.info("Connection successfull");
 
@@ -223,8 +224,8 @@ public class JElectroBaseTest {
 			j1.listenTo(12001);
 			j2.connectTo("localhost", 12001);
 
-			Assert.assertEquals(1, j1.getActiveConnections().size());
-			Assert.assertEquals(1, j2.getActiveConnections().size());
+			Assert.assertEquals(1, j1.waitForActiveConnections(1));
+			Assert.assertEquals(1, j2.waitForActiveConnections(1));
 
 			log.info("Connection successfull");
 
@@ -274,6 +275,9 @@ public class JElectroBaseTest {
 			j1.bind("add1", add1);
 			j2.bind("add2", add2);
 
+			Assert.assertEquals(1, j1.waitForActiveConnections(1));
+			Assert.assertEquals(1, j2.waitForActiveConnections(1));
+			
 			Calc add1Stub = j2.lookupUnique("add1", Calc.class);
 			Calc add2Stub = j1.lookupUnique("add2", Calc.class);
 
@@ -305,6 +309,9 @@ public class JElectroBaseTest {
 			j1.listenTo(12001);
 			j2.connectTo("localhost", 12001);
 
+			Assert.assertEquals(1, j1.waitForActiveConnections(1));
+			Assert.assertEquals(1, j2.waitForActiveConnections(1));
+			
 			Calc add1 = new CalcImpl(10);
 			Calc add2 = new CalcImpl(20);
 
@@ -337,6 +344,9 @@ public class JElectroBaseTest {
 			Calc calc = new CalcImpl(10);
 			j1.bind("calc", calc);
 
+			Assert.assertEquals(1, j1.waitForActiveConnections(1));
+			Assert.assertEquals(1, j2.waitForActiveConnections(1));
+			
 			Calc stub = j2.lookupUnique("calc", Calc.class);
 			Assert.assertEquals(5d, stub.divide(10, 2), 0.001d);
 
@@ -363,7 +373,11 @@ public class JElectroBaseTest {
 
 			j2.connectTo("localhost", 12001);
 
+			Assert.assertEquals(1, j1.waitForActiveConnections(1));
+			Assert.assertEquals(1, j2.waitForActiveConnections(1));
+			
 			Calc stub = j2.lookupUnique("calc", Calc.class);
+			
 			Assert.assertEquals(5d, stub.divide(10, 2), 0.001d);
 
 			Assert.assertEquals(10, stub.divide(10, 1), 0.001d);
@@ -396,14 +410,21 @@ public class JElectroBaseTest {
 
 			j1.connectTo("localhost", 12001);
 			j1.connectTo("localhost", 12002);
+			j1.connectTo("localhost", 12003);
 
 			j4.connectTo("localhost", 12001);
-			j4.connectTo("localhost", 12002);
-			
-			j1.connectTo("localhost", 12003);
+			j4.connectTo("localhost", 12002);			
 			j4.connectTo("localhost", 12003);
 
 
+			Assert.assertEquals(3, j1.waitForActiveConnections(3));
+			Assert.assertEquals(3, j4.waitForActiveConnections(3));
+			
+			Assert.assertEquals(2, j2.waitForActiveConnections(2));
+			Assert.assertEquals(2, j3.waitForActiveConnections(2));
+			Assert.assertEquals(2, j5.waitForActiveConnections(2));
+			
+			
 			Calc calc = new CalcImpl(0);
 			j1.bind("calc", calc);
 
@@ -484,9 +505,16 @@ public class JElectroBaseTest {
 			j4.connectTo("localhost", 12001);
 			j4.connectTo("localhost", 12002);
 
+			
+			
+			
 			Calc calc = new CalcImpl(0);
 			j1.bind("calc", calc);
 
+			Assert.assertEquals(2, j1.waitForActiveConnections(2));
+			Assert.assertEquals(2, j4.waitForActiveConnections(2));
+			
+			
 			Calc calcStub = j4.lookupUnique("calc", Calc.class);
 
 			Assert.assertEquals(60, calcStub.add(10, 20, 30));
@@ -526,6 +554,11 @@ public class JElectroBaseTest {
 
 			Calc calc = new CalcImpl(0);
 			j1.bind("calc", calc);
+			
+			Assert.assertEquals(1, j1.waitForActiveConnections(1));
+			Assert.assertEquals(2, j3.waitForActiveConnections(2));
+			Assert.assertEquals(1, j4.waitForActiveConnections(1));
+			Assert.assertEquals(2, j2.waitForActiveConnections(2));
 
 			Calc calcStub = j4.lookupUnique("calc", Calc.class);
 
@@ -569,6 +602,9 @@ public class JElectroBaseTest {
 			Calc calc = new CalcImpl(0);
 			j1.bind("calc", calc);
 
+			Assert.assertEquals(2, j1.waitForActiveConnections(2));
+			Assert.assertEquals(2, j4.waitForActiveConnections(2));
+			
 			Calc calcStub = j4.lookupUnique("calc", Calc.class);
 
 			int[] ints = new int[] { 1, 2, 3, 4, 5, 6 };

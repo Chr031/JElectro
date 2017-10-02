@@ -47,7 +47,7 @@ public class ProxyHandler implements InvocationHandler, IStub {
 		final MessageResponseSingle<ExecuteResultMessage> messageResponse = new MessageResponseSingle<ExecuteResultMessage>(message.getMessageId());
 		node.sendMessageRegisterResponse(message, messageResponse, nodePaths.getMainPath());
 
-		// TODO implements a timeout. This will be necessary to avoid hanging ...
+		// DONE implements a timeout. This will be necessary to avoid hanging ...
 		final Response<ExecuteResultMessage> response = messageResponse.poolResponse(getTimeout());
 		if (response.getError() != null)
 			throw response.getError();
@@ -55,9 +55,7 @@ public class ProxyHandler implements InvocationHandler, IStub {
 		if (response.getMessage().getError() != null)
 			throw response.getMessage().getError();
 
-		final Object result = response.getMessage().getResult();
-
-		return result;
+		return response.getMessage().getResult();
 	}
 
 	

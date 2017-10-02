@@ -40,7 +40,7 @@ public class LookupResultStubProducer<S> implements IElementProducer<StubReferen
 
 	@Override
 	public void onResponseReceived(Response<LookupResultMessage> response) {
-
+		log.debug("on lookup response");
 		if (response.getMessage() != null) {
 			LookupResultMessage message = response.getMessage();
 			for (String stubName : message.getMatchingStubNames()) {

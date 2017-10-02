@@ -61,9 +61,15 @@ public class MessageResponseMulti<M extends Message> implements IMessageResponse
 	public void addResponse(M message, Throwable error) throws InterruptedException {
 		final Response<M> response = new Response<M>(message, error);
 		queue.put(response);
-		if (listeners.isFireProxyReady()) 
+		if (listeners.isFireProxyReady()) {
 			listeners.getFireProxy().onResponseReceived(response);
-		log.debug("Response received");
+			if (listeners.size() == 0) {
+				log.debug("this should be never the case");
+			}
+			log.debug("Response received and listener informed : " + listeners.size());
+		} else {
+			log.debug("Response received");
+		}
 	}
 
 	public void addResponseListener(IResponseListener<M> listener) {

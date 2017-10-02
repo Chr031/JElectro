@@ -84,7 +84,7 @@ public class LookupMessageProcessor {
 	}
 
 	/**
-	 * Get the MessageResponse and add the new incoming result to it !
+	 * Get the MessageResponse and add the new incoming result bound to it !
 	 * 
 	 * @param locateMessage
 	 * @param transporter
@@ -97,7 +97,7 @@ public class LookupMessageProcessor {
 		if (response != null) {
 			lookupResultMessage.setStubNodePath(transporter.getNodePath().reverse());
 			response.addMessage(lookupResultMessage);
-		}
+		} else log.warn("Result of an lookup message is lost : " + lookupResultMessage ); 
 	}
 
 }

@@ -9,6 +9,7 @@ public class MessageResponseContainer {
 	private final Map<Long, IMessageResponse<?>> messageResponseMap;
 
 	public MessageResponseContainer() {
+		// TODO should be changed to a weak hash map to avoid   
 		messageResponseMap = new ConcurrentHashMap<Long, IMessageResponse<?>>();
 	}
 

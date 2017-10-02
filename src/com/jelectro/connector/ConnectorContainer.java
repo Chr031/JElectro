@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.jelectro.ConnectionListener;
 import com.jelectro.ConnectionListener.ConnectionEvent;
+import com.jelectro.JElectro;
 import com.jelectro.utils.WeakFireListeners;
 
  
@@ -23,7 +24,9 @@ public class ConnectorContainer {
 	private final Map<ConnectorKey, IConnector> connectorMap;
 	
 	private WeakFireListeners<ConnectionListener> weakConectionListenerList;
-
+	
+	private final Object connectionEventLock = new Object();
+	
 	public ConnectorContainer() {
 		connectorMap = new ConcurrentHashMap<ConnectorKey, IConnector>();
 		weakConectionListenerList = new WeakFireListeners<>(ConnectionListener.class);
@@ -32,8 +35,11 @@ public class ConnectorContainer {
 	public void addConnector(IConnector connector) {
 		connectorMap.put(connector.getKey(), connector);
 		log.debug("In " + this + " Connector added " + connector.getKey());
-		 
-		// TODO shall be reworked with an async possibility 
+		
+		synchronized (connectionEventLock) {
+			connectionEventLock.notifyAll();
+		}
+		// TODO shall be reworked with a cleaner async possibility 
 		new Thread( () -> {
 			weakConectionListenerList.getFireProxy().onConnectionEvent(ConnectionEvent.CONNECTION);
 		}).start();
@@ -43,19 +49,45 @@ public class ConnectorContainer {
 		connectorMap.remove(connector.getKey());
 		log.debug("In " + this + " Connector removed " + connector.getKey());
 		
-		// TODO shall be reworked with an async possibility 
+		synchronized (connectionEventLock) {
+			connectionEventLock.notifyAll();
+		}
+		
+		// TODO shall be reworked with a cleaner async possibility 
 		new Thread( () -> {
 			weakConectionListenerList.getFireProxy().onConnectionEvent(ConnectionEvent.DISCONNECTION);
 		}).start();
 	}
 
 	public void addConnectionListener(ConnectionListener connectionListener) {
-		
 		weakConectionListenerList.addListener(connectionListener);
 	}
 
 	public IConnector getConnector(ConnectorKey connectorKey) {
 		return connectorMap.get(connectorKey);
+	}
+
+	/**
+	 * TODO implements a timeout ....
+	 * @param minimalConnectionCount
+	 * @return
+	 */
+	public int waitForActiveConnections(int minimalConnectionCount) {
+		if (size()>=minimalConnectionCount ) return size() ;
+		synchronized (connectionEventLock) {
+			while (size()<minimalConnectionCount) {
+				try {
+					connectionEventLock.wait(JElectro.DEFAULT_GLOBAL_TIMEOUT);
+				} catch (InterruptedException e) {
+					
+				}
+			}
+			return size();
+		}
+	}
+
+	public int size() {
+		return connectorMap.size();
 	}
 
 	/**
@@ -96,10 +128,6 @@ public class ConnectorContainer {
 
 		}
 
-	}
-
-	public int size() {
-		return connectorMap.size();
 	}
 
 }

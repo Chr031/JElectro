@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
@@ -128,11 +129,18 @@ public class JElectro implements Closeable {
 		return keys;
 	}
 
-	public void addConnectionListener(ConnectionListener connectionListener) {
-		
-		node.getConnectorContainer().addConnectionListener(connectionListener);
-		
-		
+	/**
+	 * Wait for a minimal number of active connections. returns the numbers of connection found.
+	 * Timeout for connection count set to {@link #DEFAULT_GLOBAL_TIMEOUT}
+	 * @param minimalConnectionCount
+	 * @return the number of active connections
+	 */
+	public int waitForActiveConnections(int minimalConnectionCount) {
+		return node.getConnectorContainer().waitForActiveConnections(minimalConnectionCount);
+	}
+
+	public void addConnectionListener(ConnectionListener connectionListener) {		
+		node.getConnectorContainer().addConnectionListener(connectionListener);			
 	}
 
 	public <S> void bind(String stubName, S stubInstance) throws StubNameAlreadyExistsException {

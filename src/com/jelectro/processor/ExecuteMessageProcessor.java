@@ -90,7 +90,7 @@ public class ExecuteMessageProcessor {
 
 		IMessageResponse<ExecuteResultMessage> response = node.getMessageResponseContainer().getMessageResponse(message);
 		if (response != null) response.addMessage(message);
-		else log.info("Result of an execution is lost : " + message ); 
+		else log.warn("Result of an execution is lost : " + message ); 
 		
 	}
 

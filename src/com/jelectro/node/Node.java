@@ -169,8 +169,8 @@ public class Node implements IConnectorListener {
 		final LookupResultStubProducer<S> stubProducer = new LookupResultStubProducer<S>(this, stubInterface, response);
 		
 		//final StubSet<S> futureStubSet = new FutureStubSet<S>(stubProducer);
+		futureStubSet.registerStubProducer(stubProducer);
 		
-		stubProducer.addElementProducerListener(futureStubSet);
 		
 
 		// TODO see if dummy local binding is a option !

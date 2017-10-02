@@ -20,6 +20,7 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 	private final List<StubReference<S>> stubReferenceList;
 	private final Object lock;
 	private final WeakFireListeners<StubSetListener<S>> stubSetListeners;
+	private final ArrayList<LookupResultStubProducer<S>> elementProducerList;
 
 	
 	public FutureStubSet(String regexLookupString, Class<S> stubInterface) {
@@ -28,6 +29,7 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 		this.stubSetListeners = new WeakFireListeners<>();
 		this.regexLookupString = regexLookupString;
 		this.stubInterface = stubInterface;	
+		elementProducerList = new ArrayList<>();
 		
 	}
 
@@ -112,11 +114,9 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 
 	@Override
 	public S get(int i) {
-		boolean wait1 = waitFor(i + 1);
-		if (!wait1)
-			wait1 = waitFor(i + 1);
+		boolean wait1 = waitFor(i + 1);	
 		if (!wait1) 
-			log.debug("Stubs are not all present");
+			log.debug("Stubs are not all present ???");
 		return stubReferenceList.get(i).getStubProxy();
 	}
 
@@ -126,6 +126,13 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 		stubSetListeners.addListeners(listeners);
 		log.debug("StubSetListener added");
 
+	}
+
+	public void registerStubProducer(LookupResultStubProducer<S> stubProducer) {
+		stubProducer.addElementProducerListener(this);
+		// we keep a track of the stubProducer so that it is not garbage collected, since there is a chain of weak listeners 
+		elementProducerList.add(stubProducer);
+		
 	}
 
 }
