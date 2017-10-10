@@ -22,7 +22,7 @@ public class JElectroStressTest {
 	public static void initTest() {
 		//Logger.setBaseConfiguration();
 		instanceNbr = 100;
-		nbrOfCalls = 1000;
+		nbrOfCalls = 10000;
 	}
 
 	@Test
@@ -148,7 +148,7 @@ public class JElectroStressTest {
 
 			for (int i = instanceNbr - 1; i > 0; i--) {
 				Calc stub = nodes[i].lookupUnique("calc", Calc.class);
-				Assert.assertEquals(6, stub.add(1, 2, 3));
+				Assert.assertEquals(82, stub.add(1, 2, 3, 4, 5, 6 ,7 ,8,9,9,9,9,10));
 				// Thread.sleep(1000);
 			}
 

@@ -450,10 +450,11 @@ public class Node implements IConnectorListener {
 			this.serverSocket = new ServerSocket(port);
 		}
 
-		protected void close() throws IOException {
+		protected void close() throws IOException, InterruptedException {
 			active = false;
 			this.interrupt();
 			serverSocket.close();
+			this.join();
 		}
 
 		public void run() {

@@ -29,6 +29,7 @@ public class Connector implements IConnector  {
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	private InMessageRunner runner;
+	private Thread runnerThread;
 
 	private final IConnectorListener listener;
 
@@ -72,7 +73,7 @@ public class Connector implements IConnector  {
 		
 		if (remoteConnectionReady) {
 			runner = new InMessageRunner();
-			final Thread runnerThread = new Thread(runner);
+			runnerThread = new Thread(runner);
 			runnerThread.setName(String.format("JElectroConnector-%1$s-%2$s",localNodeKey.getName(), remoteNodeKey.getName()));
 			runnerThread.start();
 			listener.onStart(this);
@@ -145,9 +146,13 @@ public class Connector implements IConnector  {
 		try {
 			if (runner != null)
 				runner.setActive(false);
-
+			
 			socket.close();
-		} catch (IOException ioe) {
+			
+			if (runnerThread != null)
+				runnerThread.join();
+			
+		} catch (IOException | InterruptedException ioe) {
 			listener.onError(Connector.this, ioe);
 		} finally {
 			listener.onClose(Connector.this);
