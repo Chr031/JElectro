@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.apache.log4j.Logger;
 
 import com.jelectro.JElectro;
-import com.jelectro.utils.WeakFireListeners;
+import com.jelectro.utils.FireListeners;
 
 public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<StubReference<S>> {
 
@@ -20,7 +20,7 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 	
 	private final List<StubReference<S>> stubReferenceList;
 	private final Object lock;
-	private final WeakFireListeners<StubSetPathListener<S>> stubSetListeners;
+	private final FireListeners<StubSetPathListener<S>> stubSetListeners;
 	private final ArrayList<LookupResultStubProducer<S>> elementProducerList;
 
 	
@@ -43,7 +43,7 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 		@Override
 		public void onStubPathUpdated(St stub) {
 			if (decorated instanceof StubSetPathListener)
-				((StubSetPathListener) decorated).onStubPathUpdated(stub);
+				((StubSetPathListener<St>) decorated).onStubPathUpdated(stub);
 			
 		}
 		
@@ -53,7 +53,7 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 	public FutureStubSet(String regexLookupString, Class<S> stubInterface) {
 		this.stubReferenceList = new CopyOnWriteArrayList<>();
 		this.lock = new Object();
-		this.stubSetListeners = new WeakFireListeners<>();
+		this.stubSetListeners = new FireListeners<>();
 		this.regexLookupString = regexLookupString;
 		this.stubInterface = stubInterface;	
 		elementProducerList = new ArrayList<>();

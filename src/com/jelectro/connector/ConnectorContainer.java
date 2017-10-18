@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import com.jelectro.ConnectionListener;
 import com.jelectro.ConnectionListener.ConnectionEvent;
 import com.jelectro.JElectro;
-import com.jelectro.utils.WeakFireListeners;
+import com.jelectro.utils.FireListeners;
 
  
 
@@ -23,13 +23,13 @@ public class ConnectorContainer {
 
 	private final Map<ConnectorKey, IConnector> connectorMap;
 	
-	private WeakFireListeners<ConnectionListener> weakConectionListenerList;
+	private FireListeners<ConnectionListener> conectionListenerList;
 	
 	private final Object connectionEventLock = new Object();
 	
 	public ConnectorContainer() {
 		connectorMap = new ConcurrentHashMap<ConnectorKey, IConnector>();
-		weakConectionListenerList = new WeakFireListeners<>(ConnectionListener.class);
+		conectionListenerList = new FireListeners<>(ConnectionListener.class);
 	}
 
 	public void addConnector(IConnector connector) {
@@ -40,9 +40,10 @@ public class ConnectorContainer {
 			connectionEventLock.notifyAll();
 		}
 		// TODO shall be reworked with a cleaner async possibility 
-		new Thread( () -> {
-			weakConectionListenerList.getFireProxy().onConnectionEvent(ConnectionEvent.CONNECTION);
-		}).start();
+		if (conectionListenerList.size()>0)
+			new Thread( () -> {
+				conectionListenerList.getFireProxy().onConnectionEvent(ConnectionEvent.CONNECTION);
+			}).start();
 	}
 
 	public void removeConnector(IConnector connector) {
@@ -54,13 +55,14 @@ public class ConnectorContainer {
 		}
 		
 		// TODO shall be reworked with a cleaner async possibility 
-		new Thread( () -> {
-			weakConectionListenerList.getFireProxy().onConnectionEvent(ConnectionEvent.DISCONNECTION);
-		}).start();
+		if (conectionListenerList.size()>0)
+			new Thread( () -> {
+				conectionListenerList.getFireProxy().onConnectionEvent(ConnectionEvent.DISCONNECTION);
+			}).start();
 	}
 
 	public void addConnectionListener(ConnectionListener connectionListener) {
-		weakConectionListenerList.addListener(connectionListener);
+		conectionListenerList.addListener(connectionListener);
 	}
 
 	public IConnector getConnector(ConnectorKey connectorKey) {

@@ -13,15 +13,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class WeakFireListenersTest {
+public class FireListenersTest {
 
-	public static final Logger log = Logger.getLogger(WeakFireListenersTest.class);
+	public static final Logger log = Logger.getLogger(FireListenersTest.class);
 
 	
 	
 	@Parameterized.Parameters
 	public static List<Object[]> data() {
-		return Arrays.asList(new Object[1][0]);
+		return Arrays.asList(new Object[10000][0]);
 	}
 
 	
@@ -32,7 +32,7 @@ public class WeakFireListenersTest {
 			
 		LinkedBlockingQueue<String> messageQueue = new LinkedBlockingQueue<>();
 
-		WeakFireListeners<Consumer<String>> fireListeners = new WeakFireListeners<>();
+		FireListeners<Consumer<String>> fireListeners = new FireListeners<>();
 
 		final int maxLoop = 10;
 		
@@ -82,11 +82,11 @@ public class WeakFireListenersTest {
 	}
 	
 	
-	@Test
+	/*@Test
 	public void testWeakStatusOfAListener() throws InterruptedException {
 		LinkedBlockingQueue<String> messageQueue = new LinkedBlockingQueue<>();
 
-		WeakFireListeners<Consumer<String>> fireListeners = new WeakFireListeners<>();
+		FireListeners<Consumer<String>> fireListeners = new FireListeners<>();
 
 		final int maxLoop = 10;
 		
@@ -136,8 +136,8 @@ public class WeakFireListenersTest {
 		t1.join();
 		
 		Assert.assertEquals("Check int not ok ",maxLoop, checkInt.get());
-		Assert.assertEquals("A int not ok ", maxLoop, aInt.get());
+		Assert.assertTrue("A int not ok " + aInt.get(), 5 >= aInt.get());
 
-	}
+	}*/
 
 }

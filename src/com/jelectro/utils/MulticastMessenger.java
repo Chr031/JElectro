@@ -16,7 +16,7 @@ public class MulticastMessenger<M> {
 	private static final Logger log = Logger.getLogger(MulticastMessenger.class);
 
 	private static final byte[] MESSAGE_HEADER = new byte[] { 1, 2, 3, 4, 5, 6 };
-	private final WeakFireListeners<MulticastResponseListener<M>> responseListeners;
+	private final FireListeners<MulticastResponseListener<M>> responseListeners;
 	private final InetAddress group;
 	private final MulticastSocket mSocket;
 	private final int port;
@@ -26,7 +26,7 @@ public class MulticastMessenger<M> {
 
 	public MulticastMessenger(int port) throws IOException {
 		this.port = port;
-		responseListeners = new WeakFireListeners<MulticastResponseListener<M>>();
+		responseListeners = new FireListeners<MulticastResponseListener<M>>();
 		group = InetAddress.getByName("228.5.6.7");
 		mSocket = new MulticastSocket(port);
 		mSocket.joinGroup(group);

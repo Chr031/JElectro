@@ -437,6 +437,7 @@ public class JElectroBaseTest {
 				@Override
 				public void onStubReceived(Calc stub) {
 					stubReceivedCount.incrementAndGet();
+					System.out.println("stub found");
 					synchronized (lock) {
 						lock.notifyAll();
 					}
@@ -456,12 +457,13 @@ public class JElectroBaseTest {
 			while (stubReceivedCount.get() <1 && i < 10) {
 				i++;
 				synchronized (lock) {
-					lock.wait(2000);
+					lock.wait(50);
 				}
 			}
 
 			if (stubReceivedCount.get()!=1) {
 				log.debug("not all stubs received");
+				System.out.println("not found !!!!");
 			}
 			Assert.assertEquals(1, stubReceivedCount.get());
 			/**

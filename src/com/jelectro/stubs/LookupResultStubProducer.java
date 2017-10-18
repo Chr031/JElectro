@@ -7,19 +7,19 @@ import com.jelectro.message.response.IResponseListener;
 import com.jelectro.message.response.MessageResponseMulti;
 import com.jelectro.message.response.Response;
 import com.jelectro.node.Node;
-import com.jelectro.utils.WeakFireListeners;
+import com.jelectro.utils.FireListeners;
 
 public class LookupResultStubProducer<S> implements IElementProducer<StubReference<S>>, IResponseListener<LookupResultMessage> {
 
 	private static final Logger log = Logger.getLogger(LookupResultStubProducer.class);
 
-	private final WeakFireListeners<IElementProducerListener<StubReference<S>>> listeners;
+	private final FireListeners<IElementProducerListener<StubReference<S>>> listeners;
 	private final MessageResponseMulti<LookupResultMessage> messageResponse;
 	private final Node node;
 	private final Class<S> stubInterface;
 
 	public LookupResultStubProducer(Node node, Class<S> stubInterface, MessageResponseMulti<LookupResultMessage> messageResponse) {
-		this.listeners = new WeakFireListeners<IElementProducerListener<StubReference<S>>>();
+		this.listeners = new FireListeners<IElementProducerListener<StubReference<S>>>();
 
 		this.node = node;
 		this.stubInterface = stubInterface;

@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.jelectro.message.Message;
-import com.jelectro.utils.WeakFireListeners;
+import com.jelectro.utils.FireListeners;
 
 public class MessageResponseMulti<M extends Message> implements IMessageResponse<M> {
 
@@ -17,11 +17,11 @@ public class MessageResponseMulti<M extends Message> implements IMessageResponse
 	private final long messageId;
 	
 	private final BlockingQueue<Response<M>> queue;
-	private final WeakFireListeners<IResponseListener<M>> listeners;
+	private final FireListeners<IResponseListener<M>> listeners;
 
 	public MessageResponseMulti(long messageId) {
 		queue = new LinkedBlockingQueue<Response<M>>();
-		listeners = new WeakFireListeners<IResponseListener<M>>();
+		listeners = new FireListeners<IResponseListener<M>>();
 		this.messageId = messageId;
 		
 	}
@@ -64,7 +64,7 @@ public class MessageResponseMulti<M extends Message> implements IMessageResponse
 		if (listeners.isFireProxyReady()) {
 			listeners.getFireProxy().onResponseReceived(response);
 			if (listeners.size() == 0) {
-				log.debug("this should be never the case");
+				log.warn("this should be never the case");
 			}
 			log.debug("Response received and listener informed : " + listeners.size());
 		} else {

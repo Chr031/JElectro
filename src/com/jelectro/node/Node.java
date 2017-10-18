@@ -42,7 +42,7 @@ import com.jelectro.stubs.LookupResultStubProducer;
 import com.jelectro.stubs.StubContainer;
 import com.jelectro.stubs.StubSet;
 import com.jelectro.stubs.StubSetListener;
-import com.jelectro.utils.WeakFireListeners;
+import com.jelectro.utils.FireListeners;
 
 /**
  * Kind of the main class of this project.
@@ -66,11 +66,11 @@ public class Node implements IConnectorListener {
 
 	private final StubContainer stubContainer;
 
-	private final WeakFireListeners<INodeListener> nodeListeners;
+	private final FireListeners<INodeListener> nodeListeners;
 
 	public Node(final NodeKey nodeKey) {
 		this.nodeKey = nodeKey;
-		this.nodeListeners = new WeakFireListeners<INodeListener>();
+		this.nodeListeners = new FireListeners<INodeListener>();
 		this.connectorContainer = new ConnectorContainer();
 		this.executor = Executors.newCachedThreadPool(new ThreadFactory() {
 

@@ -4,14 +4,15 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collections;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class WeakFireListeners<L> {
+public class FireListeners<L> {
 
-	private final Map<L, Void> lMap;
+	private final List<L> lList;
 	private volatile L fireProxy;
 	private volatile boolean fireProxyReady;
 
@@ -28,11 +29,12 @@ public class WeakFireListeners<L> {
 	 * {@link Collections#synchronizedMap} for the creation of the
 	 * {@link WeakHashMap}
 	 */
-	public WeakFireListeners() {
-		lMap = Collections.synchronizedMap(new WeakHashMap<L, Void>());
+	public FireListeners() {
+		lList = //Collections.synchronizedMap(new WeakHashMap<L, Object>());
+				new Vector<>();
 	}
 
-	public WeakFireListeners(Class<L> listenerClass) {
+	public FireListeners(Class<L> listenerClass) {
 		this();
 		initFireProxy(listenerClass);
 	}
@@ -42,7 +44,7 @@ public class WeakFireListeners<L> {
 		if (fireProxy == null && listener != null) {
 			initFireProxy((Class<L>) listener.getClass());
 		}
-		lMap.put(listener, null);
+		lList.add(listener);//, new Object());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -56,12 +58,12 @@ public class WeakFireListeners<L> {
 		}
 
 		for (L l : listeners) {
-			lMap.put(l, null);
+			lList.add(l);//, null);
 		}
 	}
 
 	public Set<L> getListeners() {
-		return lMap.keySet();
+		return new HashSet<>(lList);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -103,7 +105,7 @@ public class WeakFireListeners<L> {
 	 * @return
 	 */
 	public int size() {
-		return lMap.size();
+		return lList.size();
 	}
 
 }
