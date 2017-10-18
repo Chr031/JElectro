@@ -18,5 +18,5 @@ public interface StubSet<S> extends Iterable<S> {
 
 	public abstract boolean waitFor(int i);
 	
-	abstract void addStubSetListener(StubSetListener<S>... listeners);
+	abstract void addStubSetListeners(StubSetListener<S>... listeners);
 }

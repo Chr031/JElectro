@@ -19,7 +19,7 @@ import com.jelectro.exception.JElectroException;
 import com.jelectro.exception.PathNotAvailableException;
 import com.jelectro.node.Node;
 import com.jelectro.stubs.StubSet;
-import com.jelectro.stubs.StubSetListener;
+import com.jelectro.stubs.StubSetPathListener;
 import com.jelectro.testobjects.Calc;
 import com.jelectro.testobjects.CalcImpl;
 import com.jelectro.testobjects.Prime;
@@ -432,7 +432,7 @@ public class JElectroBaseTest {
 			final Object lock = new Object();
 			final AtomicInteger stubReceivedCount = new AtomicInteger(0);
 			final AtomicInteger stubPathAddedCount = new AtomicInteger(0);
-			final StubSetListener<Calc> ssl = new StubSetListener<Calc>() {
+			final StubSetPathListener<Calc> ssl = new StubSetPathListener<Calc>() {
 
 				@Override
 				public void onStubReceived(Calc stub) {

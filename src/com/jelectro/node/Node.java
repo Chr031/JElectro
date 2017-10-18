@@ -152,7 +152,7 @@ public class Node implements IConnectorListener {
 		final FutureStubSet<S> futureStubSet = new FutureStubSet<S>(regexLookupString, stubInterface);
 		
 		if (stubSetListeners != null && stubSetListeners.length > 0 && stubSetListeners[0] != null)
-			futureStubSet.addStubSetListener(stubSetListeners);
+			futureStubSet.addStubSetListeners(stubSetListeners);
 		
 		lookup(futureStubSet, regexLookupString, stubInterface);
 		

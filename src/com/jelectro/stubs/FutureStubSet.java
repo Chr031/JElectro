@@ -1,6 +1,7 @@
 package com.jelectro.stubs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -19,9 +20,35 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 	
 	private final List<StubReference<S>> stubReferenceList;
 	private final Object lock;
-	private final WeakFireListeners<StubSetListener<S>> stubSetListeners;
+	private final WeakFireListeners<StubSetPathListener<S>> stubSetListeners;
 	private final ArrayList<LookupResultStubProducer<S>> elementProducerList;
 
+	
+	private final class StubSetListenerDecorator<St> implements StubSetPathListener<St> {		
+		
+		private final StubSetListener<St> decorated;
+		
+		
+		public StubSetListenerDecorator(StubSetListener<St> stubSetListener) {
+			super();
+			this.decorated = stubSetListener;
+		}
+
+		@Override
+		public void onStubReceived(St stub) {
+			decorated.onStubReceived(stub);
+			
+		}
+
+		@Override
+		public void onStubPathUpdated(St stub) {
+			if (decorated instanceof StubSetPathListener)
+				((StubSetPathListener) decorated).onStubPathUpdated(stub);
+			
+		}
+		
+	}
+	
 	
 	public FutureStubSet(String regexLookupString, Class<S> stubInterface) {
 		this.stubReferenceList = new CopyOnWriteArrayList<>();
@@ -121,9 +148,9 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 	}
 
 	
-	public void addStubSetListener(StubSetListener<S>... listeners) {
+	public void addStubSetListeners(StubSetListener<S>... listeners) {
 		
-		stubSetListeners.addListeners(listeners);
+		Arrays.stream(listeners).map(StubSetListenerDecorator<S>::new).forEach(stubSetListeners::addListener);
 		log.debug("StubSetListener added");
 
 	}
