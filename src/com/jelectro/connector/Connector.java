@@ -32,11 +32,16 @@ public class Connector implements IConnector  {
 	private Thread runnerThread;
 
 	private final IConnectorListener listener;
+	
+	private final String remoteHost;
+	private final int remotePort;
 
 	public Connector(Socket socket, NodeKey nodeKey, IConnectorListener listener) {
 		this.localNodeKey = nodeKey;
 		this.socket = socket;
 		this.listener = listener;
+		this.remoteHost = socket.getInetAddress().getHostAddress();
+		this.remotePort = socket.getPort();
 	}
 
 	/* (non-Javadoc)
@@ -45,6 +50,16 @@ public class Connector implements IConnector  {
 	@Override
 	public ConnectorKey getKey() {
 		return connectorKey;
+	}
+
+	@Override
+	public String getRemoteHost() {
+		return this.remoteHost;
+	}
+
+	@Override
+	public int getRemotePort() {
+		return this.remotePort;
 	}
 
 	/* (non-Javadoc)

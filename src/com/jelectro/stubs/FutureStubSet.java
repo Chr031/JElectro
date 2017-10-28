@@ -117,10 +117,9 @@ public class FutureStubSet<S> implements StubSet<S>, IElementProducerListener<St
 				stubReferenceList.add(stubReference);
 				if (stubSetListeners.isFireProxyReady())
 					stubSetListeners.getFireProxy().onStubReceived(stubReference.getStubProxy());
-				
 				log.debug("StubReference added");
-			} else {
 
+			} else {
 				stubReferenceList.get(stubReferenceIndex).addPath(stubReference.getPaths());
 				if (stubSetListeners.isFireProxyReady())
 					stubSetListeners.getFireProxy().onStubPathUpdated(stubReferenceList.get(stubReferenceIndex).getStubProxy());

@@ -1,4 +1,4 @@
-package com.jelectro.stream;
+package com.jelectro.node;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -7,15 +7,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Random;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import com.jelectro.node.NodeKey;
 
 public class GeneralStreamTest {
 
@@ -24,13 +21,10 @@ public class GeneralStreamTest {
 
 	@Before
 	public void initNodeKeys() {
-		Random r = new Random(System.nanoTime());
-		byte[] b = new byte[4];
-
+		NodeService nodeService = new NodeService();
 		nodeKeys = new NodeKey[cpt];
 		for (int i = 0; i < cpt; i++) {
-			r.nextBytes(b);
-			nodeKeys[i] = new NodeKey("" + i, b);
+			nodeKeys[i] = nodeService.createNodeKey("" + i);
 		}
 	}
 

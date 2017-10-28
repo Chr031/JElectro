@@ -11,20 +11,20 @@ public class NodeKey implements Serializable {
 	private static final long serialVersionUID = -332275733090583476L;
 
 	private final String name;
+	
+	private final byte[] id;
+
+	protected NodeKey(String name, byte[] id) {
+		this.name = name;
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
 	}
-
+	
 	public byte[] getId() {
 		return id;
-	}
-
-	private final byte[] id;
-
-	public NodeKey(String name, byte[] id) {
-		this.name = name;
-		this.id = id;
 	}
 
 	/**
@@ -88,8 +88,9 @@ public class NodeKey implements Serializable {
 
 	@Override
 	public String toString() {
-		return "NodeKey [name=" + name + ", id=" + Arrays.toString(id) + ", hash=" + hashCode() + ", sys hash="
-				+ System.identityHashCode(this) + " ]";
+		/*return "NodeKey [name=" + name + ", id=" + Arrays.toString(id) + ", hash=" + hashCode() + ", sys hash="
+				+ System.identityHashCode(this) + " ]";*/
+		return "NodeKey['"+name+"']";
 	}
 
 }

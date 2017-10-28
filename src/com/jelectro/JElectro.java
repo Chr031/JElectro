@@ -61,6 +61,10 @@ public class JElectro implements Closeable {
 		this.node = new Node(nodeService.createNodeKey(this.nodeName));
 
 	}
+	
+	public String getName() {
+		return nodeName;
+	}
 
 	public NodeKey getNodeKey() {
 		return node.getNodeKey();

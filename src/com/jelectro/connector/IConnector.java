@@ -8,8 +8,12 @@ import com.jelectro.message.MessageTransporter;
 
 public interface IConnector {
 
-	public abstract ConnectorKey getKey();
+	ConnectorKey getKey();
 
+	String getRemoteHost();
+	
+	int getRemotePort();
+	
 	/**
 	 * This method initialize the thread to listen to the incoming messages. It
 	 * should also initialize the object's streams based on the socket.
@@ -18,10 +22,10 @@ public interface IConnector {
 	 * @throws JElectroException
 	 * 
 	 */
-	public abstract void init() throws IOException, JElectroException;
+	void init() throws IOException, JElectroException;
 
-	public abstract <M extends Message> void sendMessageTransporter(MessageTransporter<M> transporter) throws IOException;
+	<M extends Message> void sendMessageTransporter(MessageTransporter<M> transporter) throws IOException;
 
-	public abstract void close();
+	void close();
 
 }

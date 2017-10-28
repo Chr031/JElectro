@@ -31,6 +31,11 @@ public class LookupMessage extends Message {
 		return stubInterface;
 	}
 
+	@Override
+	public String toString() {
+		return "["+messageId + ", '" + stubNameRegEx + "', " + stubInterface.getSimpleName() + "]";
+	}
+
 	
 
 }

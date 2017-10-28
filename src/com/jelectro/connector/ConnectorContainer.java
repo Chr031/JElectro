@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.jelectro.ConnectionListener;
 import com.jelectro.ConnectionListener.ConnectionEvent;
+import com.jelectro.ConnectionListener.EventType;
 import com.jelectro.JElectro;
 import com.jelectro.utils.FireListeners;
 
@@ -42,7 +43,11 @@ public class ConnectorContainer {
 		// TODO shall be reworked with a cleaner async possibility 
 		if (conectionListenerList.size()>0)
 			new Thread( () -> {
-				conectionListenerList.getFireProxy().onConnectionEvent(ConnectionEvent.CONNECTION);
+				conectionListenerList.getFireProxy().onConnectionEvent(
+						new ConnectionEvent (EventType.CONNECTION, 
+						connector.getKey().getRemoteNodeKey(),
+						connector.getRemoteHost(),
+						connector.getRemotePort()));
 			}).start();
 	}
 
@@ -57,7 +62,12 @@ public class ConnectorContainer {
 		// TODO shall be reworked with a cleaner async possibility 
 		if (conectionListenerList.size()>0)
 			new Thread( () -> {
-				conectionListenerList.getFireProxy().onConnectionEvent(ConnectionEvent.DISCONNECTION);
+				conectionListenerList.getFireProxy().onConnectionEvent(
+					new ConnectionEvent (EventType.DISCONNECTION, 
+						connector.getKey().getRemoteNodeKey(),
+						connector.getRemoteHost(),
+						connector.getRemotePort()
+						));
 			}).start();
 	}
 

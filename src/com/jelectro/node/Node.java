@@ -186,6 +186,7 @@ public class Node implements IConnectorListener {
 		// to loose any messages.
 		this.broadcastMessageRegisterResponse(locateMessage, response);
 	
+		log.info("New Lookup message sent : " + locateMessage);
 
 	}
 
